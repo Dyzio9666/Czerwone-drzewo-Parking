@@ -1,14 +1,17 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
+import { refreshTokenEntity } from 'src/entity/refreshtoken.entity';
+import {v4 as uuidv4} from  'uuid'
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(userEntity) private readonly userEntity : Repository<userEntity>,
-        private readonly jwtService : JwtService    
+        private readonly jwtService : JwtService,
+        @InjectRepository(refreshTokenEntity) private readonly refreshTokenEntity : Repository<refreshTokenEntity>
     ){
 
     }
@@ -27,6 +30,43 @@ export class AuthService {
         
 
     }
+    async loginIn(username : string , password : string){
+        const user = await this.userEntity.findOneBy({username : username})
+        if (!user){
+            throw new HttpException("User does not exist " , HttpStatus.BAD_REQUEST)
+
+        }
+        let  PasswordCompatioson = await bcrypt.compare(user.password,password)
+        if (!PasswordCompatioson){
+            throw new HttpException("Invalid Credentials" , HttpStatus.BAD_REQUEST)
+
+        }
+
+    }
+
+    async genereteToken(userID){
+        const accessToken = this.jwtService.sign(userID)
+        const refreshToken = uuidv4()
+        await this.storeRefreshToken(refreshToken , userID)
+        return {accessToken, refreshToken}
+
+    }
 
 
+    async storeRefreshToken(token :string , userID:string){
+        const expairyDate = new Date()
+        expairyDate.setDate(expairyDate.getDate() + 3)
+        const refreshToken = this.refreshTokenEntity.create({userID : userID , token, expiryDate : expairyDate})
+        await this.refreshTokenEntity.save(refreshToken)
+    }
+    async refreshToken(refreshToken : string){
+        const token = await this.refreshTokenEntity.findOneBy({token : refreshToken})
+        if(!token){
+            throw  new HttpException("Invalid refresh token" , HttpStatus.BAD_REQUEST)
+        }
+        if(token.expiryDate < new Date()){
+            throw new UnauthorizedException("Referesh token expired")
+        }
+        return this.genereteToken(token.userID)
+    }
 }

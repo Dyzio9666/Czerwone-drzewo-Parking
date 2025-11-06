@@ -1,6 +1,6 @@
 
 
-export class signInDataDto{
+export class loggingDto{
     username : string;
     password : string
 }

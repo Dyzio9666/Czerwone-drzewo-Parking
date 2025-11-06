@@ -20,7 +20,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRoot({
       type: 'postgres', // Określenie typu bazy danych
       host: process.env.DB_HOST,
-      
+      port: 5432,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       
       // Lokalizacja Encji i Migracji
       // Wskazuje, gdzie TypeORM ma szukać klas encji (tabel)
