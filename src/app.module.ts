@@ -1,9 +1,39 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.register({
+      secret : 'SecretKey',
+      signOptions : {expiresIn : '4h'},
+      global : true
+    }),ConfigModule.forRoot({
+      isGlobal: true, // Sprawia, że ConfigModule jest dostępny globalnie
+    }),
+    
+    // 2. Konfiguracja połączenia TypeORM z użyciem zmiennych środowiskowych
+    TypeOrmModule.forRoot({
+      type: 'postgres', // Określenie typu bazy danych
+      host: process.env.DB_HOST,
+      
+      
+      // Lokalizacja Encji i Migracji
+      // Wskazuje, gdzie TypeORM ma szukać klas encji (tabel)
+      // Użyj 'dist/**/*.entity{.ts,.js}' w środowisku produkcyjnym
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], 
+      
+      // Synchronizacja schematu bazy danych z Encjami (TYLKO na Dev/Test)
+      // Na produkcji ustaw na 'false' i używaj Migracji!
+      synchronize: true, 
+      
+      // Wyświetlanie zapytań SQL w konsoli
+      logging: true,
+    }),AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
