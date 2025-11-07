@@ -36,18 +36,28 @@ export class AuthService {
             throw new HttpException("User does not exist " , HttpStatus.BAD_REQUEST)
 
         }
-        let  PasswordCompatioson = await bcrypt.compare(user.password,password)
+        let  PasswordCompatioson = await bcrypt.compare(password ,user.password)
         if (!PasswordCompatioson){
             throw new HttpException("Invalid Credentials" , HttpStatus.BAD_REQUEST)
 
+        }
+        const token = await this.genereteToken(user.id)
+        return {
+            ...token,
+            username
         }
 
     }
 
     async genereteToken(userID){
-        const accessToken = this.jwtService.sign(userID)
+        const payload = {
+            sub : userID
+        }
+        const accessToken = this.jwtService.sign(payload)
         const refreshToken = uuidv4()
         await this.storeRefreshToken(refreshToken , userID)
+        // console.log(accessToken)
+        // console.log(accessToken)
         return {accessToken, refreshToken}
 
     }
