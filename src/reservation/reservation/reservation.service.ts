@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
     let new_date = new Date(changed_date);
     return new_date
 }
+interface places{
+    placeChoosen : any}
 @Injectable()
 export class ReservationService {
     constructor(
@@ -19,13 +21,21 @@ export class ReservationService {
     async makeNewReservation(payload : newReservationDto){
         const new_Reservation = await this.reservationEntity.create({made_by : payload.madeByID , date : payload.date, placeChoosen : payload.placeChoosen })
         return this.reservationEntity.save(new_Reservation)
-        
+
         
     }
-    async checkPossiblePlaces(date : string) {
-        chracterChange(date);
-        const query = ' ';
-        
+    async checkPossiblePlaces(date : string)  : Promise<number[]>{
+        // chracterChange(date);
+        // console.log(date)
+        let result : number[] = []
+        const query = ` select r."placeChoosen"   from reservations r 
+        where r."date" = '${date}' `;
+        const places = await this.reservationEntity.query<places[]>(query)
+        places.forEach(parkingPlace =>{
+            // console.log(parkingPlace.placeChoosen)
+            result.push(parkingPlace.placeChoosen)
+        })
+        return result
     }
 
 
