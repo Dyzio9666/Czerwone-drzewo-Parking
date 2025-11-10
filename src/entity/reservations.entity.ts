@@ -8,5 +8,7 @@ export class reservationsEntity{
     made_by : string
     @Column()
     date : string
+    @Column()
+    placeChoosen : number
     
 }
