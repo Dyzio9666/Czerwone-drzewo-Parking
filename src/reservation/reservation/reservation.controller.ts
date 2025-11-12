@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { newReservationDto } from 'src/dto /newreservation.dto';
 import { authGuard } from 'src/guards/auth.guard';
 import { ReservationService } from './reservation.service';
@@ -19,8 +19,8 @@ export class ReservationController {
     }
     // format daty dzien/miesiac/rok
     @Get('avaible-places')
-    async getAvaibleReservations(@Body() payload :dateDto){
-        console.log(payload)
+    async getAvaibleReservations(@Query() payload : any){
+        console.log(payload.date)
         return await this.reservationService.checkPossiblePlaces(payload.date)
     }
 

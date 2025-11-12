@@ -26,7 +26,7 @@ export class ReservationService {
     }
     async checkPossiblePlaces(date : string)  : Promise<number[]>{
         // chracterChange(date);
-        // console.log(date)
+        console.log(date)
         let result : number[] = []
         const query = ` select r."placeChoosen"   from reservations r 
         where r."date" = '${date}' `;
