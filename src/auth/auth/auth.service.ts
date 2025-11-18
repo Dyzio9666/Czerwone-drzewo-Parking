@@ -25,7 +25,7 @@ export class AuthService {
 
         }
         const becryptedPassword = await bcrypt.hash(password,10)
-        const newUser = await this.userEntity.create({username : username, password : becryptedPassword})
+        const newUser = await this.userEntity.create({username : username, password : becryptedPassword , role : 'user'})
         this.userEntity.save(newUser)
         
 
@@ -44,7 +44,8 @@ export class AuthService {
         const token = await this.genereteToken(user.id)
         return {
             ...token,
-            username
+            username,
+            role : user.role
         }
 
     }

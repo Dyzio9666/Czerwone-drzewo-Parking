@@ -9,4 +9,6 @@ export class userEntity{
     username : string
     @Column()
     password : string
+    @Column({nullable : true})
+    role : string
 }

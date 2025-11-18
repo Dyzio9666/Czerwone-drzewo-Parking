@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReservationModule } from './reservation/reservation/reservation.module';
+import { AdminModule } from './admin/admin/admin.module';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { ReservationModule } from './reservation/reservation/reservation.module'
       
       // Wyświetlanie zapytań SQL w konsoli
       logging: true,
-    }),AuthModule, ReservationModule],
+    }),AuthModule, ReservationModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -19,6 +19,12 @@ export class ReservationService {
     }
 
     async makeNewReservation(payload : newReservationDto){
+        const query = `select count(r."placeChoosen")   from reservations r 
+where r."date" = '${payload.date}' and r."made_by"= '${payload.madeByID}' `;
+        const alreadyReserved = await this.reservationEntity.query<any>(query)
+        if(alreadyReserved[0].count > 0){
+            throw new Error ("User already made reservation for this date")
+        }
         const new_Reservation = await this.reservationEntity.create({made_by : payload.madeByID , date : payload.date, placeChoosen : payload.placeChoosen })
         return this.reservationEntity.save(new_Reservation)
 
