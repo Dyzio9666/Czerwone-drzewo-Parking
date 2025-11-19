@@ -4,7 +4,7 @@ import { reservationsEntity } from 'src/entity/reservations.entity';
 import { authGuard } from 'src/guards/auth.guard';
 import { Repository } from 'typeorm';
 
-@UseGuards(authGuard)
+// @UseGuards(authGuard)
 @Injectable()
 export class AdminService {
     constructor(
@@ -13,8 +13,11 @@ export class AdminService {
 
 
     async getAllReservations(){
+        const currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear();
 
-        return await this.reservationEntity.find()
+        console.log(currentDate)
+        const query = ` select * from reservations r where r.date = '${currentDate}' `;
+        return await this.reservationEntity.query(query)
     }
 
     async deleteReservation(reservationID : number){

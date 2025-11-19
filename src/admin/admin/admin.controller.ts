@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { authGuard } from 'src/guards/auth.guard';
 
+@UseGuards(authGuard)
 
-authGuard(authGuard)
 @Controller('admin')
 export class AdminController {
     constructor(
