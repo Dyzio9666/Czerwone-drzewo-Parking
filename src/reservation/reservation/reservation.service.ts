@@ -47,4 +47,14 @@ where r."date" = '${payload.date}' and r."made_by"= '${payload.madeByID}' `;
     async deleteReservation(reservationId : number){
         return await this.reservationEntity.delete({id : reservationId})
     }
+    async showUserReservations(username : string){
+        const currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear();
+        console.log(currentDate)
+        const query = `
+            select r."placeChoosen" , r."date" from reservations r where r.made_by = '${username}' and r.date = '${currentDate}'
+        `   
+        const data = await this.reservationEntity.query(query)
+        return data;
+
+    }
 }

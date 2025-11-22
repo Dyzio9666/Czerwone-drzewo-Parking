@@ -18,7 +18,6 @@ export class AdminController {
 
     @Delete('delete-reservation')
     deleteAllReservations(@Body() payload : any){
-        // logic to delete all reservations would go here
         return  this.adminService.deleteReservation(payload.id)
     }
 }

@@ -23,9 +23,14 @@ export class ReservationController {
         console.log(payload.date)
         return await this.reservationService.checkPossiblePlaces(payload.date)
     }
-
+    @Get('my-places')
+    async GetMyReservatinos(@Query() payload :any ){
+        console.log(payload)
+        return this.reservationService.showUserReservations(payload.username)
+    }
     @Delete('delete-reservaiton')
     async deleteReservtion(@Body() payload  :any ){
         return await this.reservationService.deleteReservation(payload.id)
     }
+    
 }
