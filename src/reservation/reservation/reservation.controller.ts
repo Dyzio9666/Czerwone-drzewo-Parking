@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { newReservationDto } from 'src/dto /newreservation.dto';
 import { authGuard } from 'src/guards/auth.guard';
 import { ReservationService } from './reservation.service';
@@ -24,5 +24,8 @@ export class ReservationController {
         return await this.reservationService.checkPossiblePlaces(payload.date)
     }
 
-
+    @Delete('delete-reservaiton')
+    async deleteReservtion(@Body() payload  :any ){
+        return await this.reservationService.deleteReservation(payload.id)
+    }
 }

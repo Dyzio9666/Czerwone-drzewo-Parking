@@ -44,5 +44,7 @@ where r."date" = '${payload.date}' and r."made_by"= '${payload.madeByID}' `;
         return result
     }
 
-
+    async deleteReservation(reservationId : number){
+        return await this.reservationEntity.delete({id : reservationId})
+    }
 }
