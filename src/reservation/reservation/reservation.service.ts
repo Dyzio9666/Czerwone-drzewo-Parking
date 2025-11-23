@@ -51,7 +51,7 @@ where r."date" = '${payload.date}' and r."made_by"= '${payload.madeByID}' `;
         const currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear();
         console.log(currentDate)
         const query = `
-            select r."placeChoosen" , r."date" from reservations r where r.made_by = '${username}' and r.date = '${currentDate}'
+            select r."placeChoosen" , r."date" , r."id" from reservations r where r.made_by = '${username}' and r.date >= '${currentDate}'
         `   
         const data = await this.reservationEntity.query(query)
         return data;
